@@ -1,0 +1,25 @@
+From 3774a4681dd3d690e4799c1850bcf1d3f3ab7b56 Mon Sep 17 00:00:00 2001
+From: Ian Pozella <Ian.Pozella@imgtec.com>
+Date: Mon, 20 Feb 2017 10:38:07 +0000
+Subject: [PATCH 74/74] MIPS: DTS: add NOR partition name for marduk
+
+Signed-off-by: Ian Pozella <Ian.Pozella@imgtec.com>
+---
+ arch/mips/boot/dts/img/pistachio_marduk.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts b/arch/mips/boot/dts/img/pistachio_marduk.dts
+index db1c2d8..bbf9523 100644
+--- a/arch/mips/boot/dts/img/pistachio_marduk.dts
++++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
+@@ -89,6 +89,7 @@
+ 		compatible = "spansion,s25fl016k", "jedec,spi-nor";
+ 		reg = <0>;
+ 		spi-max-frequency = <50000000>;
++		linux,mtd-name = "spi-nor";
+ 	};
+ 	flash@1 {
+ 		compatible = "gigadevice,gd5f";
+-- 
+2.7.4
+

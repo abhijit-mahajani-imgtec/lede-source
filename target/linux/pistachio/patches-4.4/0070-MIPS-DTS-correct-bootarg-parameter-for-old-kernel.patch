@@ -1,0 +1,27 @@
+From bb6d6bcdfd9542a77b3e73f22a04c5e9db8b5700 Mon Sep 17 00:00:00 2001
+From: Abhimanyu Vishwakarma <Abhimanyu.Vishwakarma@imgtec.com>
+Date: Thu, 24 Nov 2016 16:02:24 +0530
+Subject: [PATCH 70/74] MIPS: DTS: correct bootarg parameter for old kernel
+
+Signed-off-by: Abhimanyu Vishwakarma <Abhimanyu.Vishwakarma@imgtec.com>
+---
+ arch/mips/boot/dts/img/pistachio_marduk.dts | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts b/arch/mips/boot/dts/img/pistachio_marduk.dts
+index cf9cebd..bff666b 100644
+--- a/arch/mips/boot/dts/img/pistachio_marduk.dts
++++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
+@@ -25,8 +25,7 @@
+ 	};
+ 
+ 	chosen {
+-		bootargs = "root=/dev/sda1 rootwait ro lpj=723968";
+-		stdout-path = "serial1:115200";
++		bootargs = "console=ttyS1,115200n8 earlycon=uart8250,mmio32,0x18101500,115200 root=/dev/sda1 rootwait ro lpj=723968";
+ 	};
+ 
+ 	memory {
+-- 
+2.7.4
+
