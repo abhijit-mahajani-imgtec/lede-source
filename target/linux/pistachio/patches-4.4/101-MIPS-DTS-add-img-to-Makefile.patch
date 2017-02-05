@@ -1,0 +1,28 @@
+From c22b41c8b1759ade178b5096bf4f201f9bf7f3b0 Mon Sep 17 00:00:00 2001
+From: Ian Pozella <Ian.Pozella@imgtec.com>
+Date: Fri, 10 Feb 2017 16:47:27 +0000
+Subject: [PATCH 01/35] MIPS: DTS: add img to Makefile
+
+An img directory was added for the Pistachio SoC but the directory
+itself wasn't added to the dts Makefile meaning they don't get
+built.
+
+Signed-off-by: Ian Pozella <Ian.Pozella@imgtec.com>
+---
+ arch/mips/boot/dts/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+index a0bf516..a41417b 100644
+--- a/arch/mips/boot/dts/Makefile
++++ b/arch/mips/boot/dts/Makefile
+@@ -1,5 +1,6 @@
+ dts-dirs	+= brcm
+ dts-dirs	+= cavium-octeon
++dts-dirs	+= img
+ dts-dirs	+= ingenic
+ dts-dirs	+= lantiq
+ dts-dirs	+= mti
+-- 
+2.7.4
+
