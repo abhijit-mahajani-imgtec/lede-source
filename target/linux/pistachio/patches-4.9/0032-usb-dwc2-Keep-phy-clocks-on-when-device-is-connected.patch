@@ -1,0 +1,52 @@
+From 0804847851b3e846e017c46fae1d155fb248186c Mon Sep 17 00:00:00 2001
+From: Govindraj Raja <Govindraj.Raja@imgtec.com>
+Date: Fri, 18 Mar 2016 17:34:41 +0000
+Subject: [PATCH 32/40] usb: dwc2: Keep phy clocks on when device is connected.
+
+The phy clock should be left `on` when a device is connected
+across the suspend/resume path.
+
+If phy clocks are gated across suspend path then this can lead
+to IO errors on block storage device that is mounted.
+
+Issue ID: 74437
+Signed-off-by: Govindraj Raja <Govindraj.Raja@imgtec.com>
+---
+ drivers/usb/dwc2/hcd.h      | 5 +++++
+ drivers/usb/dwc2/platform.c | 4 ++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/drivers/usb/dwc2/hcd.h b/drivers/usb/dwc2/hcd.h
+index 7758bfb..8dc4b18 100644
+--- a/drivers/usb/dwc2/hcd.h
++++ b/drivers/usb/dwc2/hcd.h
+@@ -459,6 +459,11 @@ void dwc2_hc_halt(struct dwc2_hsotg *hsotg, struct dwc2_host_chan *chan,
+ void dwc2_hc_start_transfer_ddma(struct dwc2_hsotg *hsotg,
+ 				 struct dwc2_host_chan *chan);
+ 
++static inline int dwc2_is_connected(struct dwc2_hsotg *hsotg)
++{
++	 return (readl(hsotg->regs + HPRT0) & HPRT0_CONNSTS) == 1;
++}
++
+ /*
+  * Reads HPRT0 in preparation to modify. It keeps the WC bits 0 so that if they
+  * are read as 1, they won't clear when written back.
+diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+index 8e1728b..8821d99 100644
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -673,6 +673,10 @@ static int __maybe_unused dwc2_suspend(struct device *dev)
+ 	struct dwc2_hsotg *dwc2 = dev_get_drvdata(dev);
+ 	int ret = 0;
+ 
++	/* PHY clocks needs to be active if device is connected */
++	if (dwc2_is_connected(dwc2))
++		return 0;
++
+ 	if (dwc2_is_device_mode(dwc2))
+ 		dwc2_hsotg_suspend(dwc2);
+ 
+-- 
+2.7.4
+
