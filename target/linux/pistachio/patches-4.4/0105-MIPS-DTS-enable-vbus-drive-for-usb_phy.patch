@@ -1,0 +1,57 @@
+From 4247f4743ac03eeb2e31f651615d0ae792ecf6bf Mon Sep 17 00:00:00 2001
+From: Abhimanyu Vishwakarma <Abhimanyu.Vishwakarma@imgtec.com>
+Date: Tue, 13 Dec 2016 18:32:42 +0530
+Subject: MIPS: DTS: enable vbus drive for usb_phy
+
+ci40 USB power is controlled by USB_PWR_ON(mfio86), enable option in
+usb phy driver to control this pin from USB block
+
+(reapply from https://github.com/CreatorDev/openwrt/blob/ci40/target/linux/pistachio/patches-4.1/0062-pistachio.dtsi-add-usb_pwr_on_pins-in-pinctrl.patch
+and https://github.com/CreatorDev/openwrt/blob/ci40/target/linux/pistachio/patches-4.1/0063-marduk_dts-enable-vbus-drive-for-usb_phy.patch)
+
+Signed-off-by: Shraddha Chaudhari <Shraddha.Chaudhari@imgtec.com>
+Signed-off-by: Abhimanyu Vishwakarma <Abhimanyu.Vishwakarma@imgtec.com>
+---
+ arch/mips/boot/dts/img/pistachio.dtsi       | 8 ++++++++
+ arch/mips/boot/dts/img/pistachio_marduk.dts | 6 ++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/arch/mips/boot/dts/img/pistachio.dtsi b/arch/mips/boot/dts/img/pistachio.dtsi
+index eba6937..5f69c04 100644
+--- a/arch/mips/boot/dts/img/pistachio.dtsi
++++ b/arch/mips/boot/dts/img/pistachio.dtsi
+@@ -764,6 +764,14 @@
+ 				drive-strength = <2>;
+ 			};
+ 		};
++
++		usb_pwr_on_pins: usb-pwr-on-pins {
++			usb-pwr-on {
++				pins = "mfio86";
++				function = "rpu_l_pll_lock";
++			};
++		};
++
+ 	};
+ 
+ 	timer: timer@18102000 {
+diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts b/arch/mips/boot/dts/img/pistachio_marduk.dts
+index 0399cb2..bfa25c2 100644
+--- a/arch/mips/boot/dts/img/pistachio_marduk.dts
++++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
+@@ -149,6 +149,12 @@
+ 	status = "okay";
+ };
+ 
++&usb_phy {
++	pinctrl-names = "default";
++	pinctrl-0 = <&usb_pwr_on_pins>;
++	enable-vbus-drive;
++};
++
+ &enet {
+ 	status = "okay";
+ };
+-- 
+2.6.2
+

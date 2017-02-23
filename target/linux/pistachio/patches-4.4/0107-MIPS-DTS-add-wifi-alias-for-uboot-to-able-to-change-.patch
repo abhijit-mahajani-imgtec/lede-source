@@ -1,0 +1,25 @@
+From 844feb361f616f1541811b282fb6a24db11f23a2 Mon Sep 17 00:00:00 2001
+From: Abhimanyu Vishwakarma <Abhimanyu.Vishwakarma@imgtec.com>
+Date: Wed, 11 Jan 2017 13:40:04 +0530
+Subject: MIPS: DTS: add wifi alias for uboot to able to change mac address
+
+Signed-off-by: Abhimanyu Vishwakarma <Abhimanyu.Vishwakarma@imgtec.com>
+---
+ arch/mips/boot/dts/img/pistachio_marduk.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts b/arch/mips/boot/dts/img/pistachio_marduk.dts
+index 1e0ee4f..47bb23f 100644
+--- a/arch/mips/boot/dts/img/pistachio_marduk.dts
++++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
+@@ -20,6 +20,7 @@
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		ethernet0 = &enet;
++		wifi0 = &wifi;
+ 		spi0 = &spfi0;
+ 		spi1 = &spfi1;
+ 	};
+-- 
+2.6.2
+

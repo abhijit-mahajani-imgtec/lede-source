@@ -1,0 +1,150 @@
+From ebf28e18596f94fbcd88632472e84ed17ffdabc6 Mon Sep 17 00:00:00 2001
+From: Abhimanyu Vishwakarma <Abhimanyu.Vishwakarma@imgtec.com>
+Date: Fri, 25 Nov 2016 10:45:54 +0530
+Subject: MIPS: DTS: add audio out device support
+
+This also enable ATU timer
+
+Signed-off-by: Abhimanyu Vishwakarma <Abhimanyu.Vishwakarma@imgtec.com>
+---
+ arch/mips/boot/dts/img/pistachio.dtsi       | 32 ++++++++++++
+ arch/mips/boot/dts/img/pistachio_marduk.dts | 76 +++++++++++++++++++++++++++++
+ 2 files changed, 108 insertions(+)
+
+diff --git a/arch/mips/boot/dts/img/pistachio.dtsi b/arch/mips/boot/dts/img/pistachio.dtsi
+index 57809f6..eba6937 100644
+--- a/arch/mips/boot/dts/img/pistachio.dtsi
++++ b/arch/mips/boot/dts/img/pistachio.dtsi
+@@ -211,6 +211,38 @@
+ 		#sound-dai-cells = <0>;
+ 	};
+ 
++	event_timer: event_timer@18102300 {
++		compatible = "img,pistachio-event-timer";
++		reg = <0x18102300 0x400>;
++
++		assigned-clocks = <&clk_core CLK_AUDIO_PLL>,
++				  <&clk_core CLK_AUDIO_PLL_MUX>,
++				  <&clk_core CLK_EVENT_TIMER_MUX>;
++		assigned-clock-parents = <0>,
++					 <&clk_core CLK_AUDIO_PLL>,
++					 <&clk_core CLK_AUDIO_PLL_MUX>;
++		assigned-clock-rates = <147456000>,
++				       <147456000>,
++				       <12288000>;
++
++		interrupts = <GIC_SHARED 53 IRQ_TYPE_EDGE_RISING>,
++			     <GIC_SHARED 54 IRQ_TYPE_EDGE_RISING>,
++			     <GIC_SHARED 55 IRQ_TYPE_EDGE_RISING>,
++			     <GIC_SHARED 56 IRQ_TYPE_EDGE_RISING>,
++			     <GIC_SHARED 57 IRQ_TYPE_EDGE_RISING>;
++
++		#clock-cells = <0>;
++		clocks = <&cr_periph SYS_CLK_EVENT_TIMER>,
++			 <&clk_core CLK_AUDIO>,
++			 <&clk_core CLK_EVENT_TIMER>,
++			 <&clk_core CLK_AUDIO_PLL>;
++		clock-names = "sys","ref0","ref1","pll";
++		img,clk-select = <1>;
++		img,clk-rate = <147456000>;
++		img,cr-periph = <&cr_periph>;
++		img,ext-src-bank = <4>;
++	};
++
+ 	spfi0: spi@18100f00 {
+ 		compatible = "img,spfi";
+ 		reg = <0x18100f00 0x100>;
+diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts b/arch/mips/boot/dts/img/pistachio_marduk.dts
+index 7c387bc0..0399cb2 100644
+--- a/arch/mips/boot/dts/img/pistachio_marduk.dts
++++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
+@@ -71,6 +71,39 @@
+ 			gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
+ 		};
+ 	};
++
++	pistachio_audio_card {
++		compatible = "img,pistachio-audio";
++
++		clocks = <&clk_core CLK_AUDIO_PLL>,
++			<&clk_core CLK_I2S>,
++			<&clk_core CLK_AUDIO>;
++		clock-names = "audio_pll", "i2s_mclk", "dac_clk";
++
++		img,cr-periph = <&cr_periph>;
++		img,event-timer = <&event_timer>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&i2s_mclk_pin>;
++
++		spdif-out {
++			cpu-dai = <&spdif_out>;
++		};
++
++		spdif-in {
++			cpu-dai = <&spdif_in>;
++		};
++
++		parallel-out {
++			cpu-dai = <&parallel_out>;
++			sound-dai = <&internal_dac>;
++		};
++
++		i2s-out {
++			cpu-dai = <&i2s_out>;
++			format = "i2s";
++		};
++	};
+ };
+ 
+ &internal_dac {
+@@ -171,3 +204,46 @@
+ 	status = "okay";
+ 	clock-frequency = <400000>;
+ };
++
++&i2s_out {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2s_out_pins>;
++};
++
++&i2s_in {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2s_in_pins>;
++};
++
++&i2s_out_pins {
++	i2s-out-clk {
++		pins = "mfio37", "mfio38";
++		function = "i2s_out";
++	};
++	i2s-out {
++		pins = "mfio39", "mfio40", "mfio41";
++		function = "i2s_out";
++	};
++};
++
++&i2s_in_pins {
++	i2s-in {
++		pins = "mfio47", "mfio48", "mfio49",
++			"mfio50", "mfio51";
++		function = "i2s_in";
++	};
++};
++
++&spdif_out {
++	status = "okay";
++};
++
++&spdif_in {
++	status = "okay";
++};
++
++&parallel_out {
++	status = "okay";
++};
+-- 
+2.6.2
+
